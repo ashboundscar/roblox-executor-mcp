@@ -1,0 +1,18 @@
+{
+  "name": "roblox-executor-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for Roblox Executor",
+  "main": "index.js",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.0",
+    "ws": "^8.16.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "scar17off",
+  "license": "ISC",
+  "type": "commonjs"
+}

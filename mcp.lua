@@ -1,10 +1,17 @@
 -- Roblox Executor MCP Client (HTTP Polling Mode) - Ultra Stable Version
 local HttpService = game:GetService("HttpService")
-local SERVER_URL = "http://localhost:8080"
+
+-- Configuration
+local SETTINGS = {
+    SERVER_URL = "http://localhost:8080",
+    ENABLE_REMOTE_HOOKS = false, -- Toggle Remote Event/Function logging
+    POLL_INTERVAL = 0.5,        -- Polling delay in seconds
+    MAX_LOGS = 300              -- Maximum number of logs to keep
+}
 
 -- Remote Logging Storage
 local RemoteLogs = {}
-local MaxLogs = 300
+local MaxLogs = SETTINGS.MAX_LOGS
 local PageSize = 30
 
 local function getObjectFromPath(path)
@@ -254,7 +261,7 @@ local function poll()
         pcall(function()
             local success, response = pcall(function()
                 return request({
-                    Url = SERVER_URL,
+                    Url = SETTINGS.SERVER_URL,
                     Method = "POST",
                     Headers = { ["Content-Type"] = "application/json" },
                     Body = HttpService:JSONEncode({ type = "poll" })
@@ -277,7 +284,7 @@ local function poll()
 
                     pcall(function()
                         request({
-                            Url = SERVER_URL,
+                            Url = SETTINGS.SERVER_URL,
                             Method = "POST",
                             Headers = { ["Content-Type"] = "application/json" },
                             Body = HttpService:JSONEncode({ type = "result", id = data.id, result = result })
@@ -286,10 +293,28 @@ local function poll()
                 end
             end
         end)
-        task.wait(0.5)
+        task.wait(SETTINGS.POLL_INTERVAL)
     end
 end
 
-pcall(setupHooks)
+if SETTINGS.ENABLE_REMOTE_HOOKS then
+    pcall(setupHooks)
+else
+    print("MCP: Remote hooks are disabled in SETTINGS")
+end
+
+print("MCP: HTTP Polling started!")
+task.spawn(poll)
+       end)
+        task.wait(SETTINGS.POLL_INTERVAL)
+    end
+end
+
+if SETTINGS.ENABLE_REMOTE_HOOKS then
+    pcall(setupHooks)
+else
+    print("MCP: Remote hooks are disabled in SETTINGS")
+end
+
 print("MCP: HTTP Polling started!")
 task.spawn(poll)

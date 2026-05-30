@@ -5,6 +5,8 @@ const {
   ListToolsRequestSchema,
 } = require("@modelcontextprotocol/sdk/types.js");
 const http = require("http");
+const fs = require("fs").promises;
+const path = require("path");
 
 const HTTP_PORT = 8080;
 
@@ -93,6 +95,17 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       },
       {
+        name: "run_lua_file",
+        description: "Reads a local Lua file and executes its content in-game.",
+        inputSchema: {
+          type: "object",
+          properties: { 
+            filePath: { type: "string", description: "Absolute or relative path to the .lua file" } 
+          },
+          required: ["filePath"],
+        },
+      },
+      {
         name: "list_children",
         description: "Returns a list of child objects for a given path.",
         inputSchema: {
@@ -157,6 +170,13 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
   try {
+    if (name === "run_lua_file") {
+      const filePath = args.filePath;
+      const code = await fs.readFile(filePath, "utf8");
+      const result = await sendToRoblox("run_lua_file", { code });
+      return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+    }
+
     const result = await sendToRoblox(name, args);
     return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
   } catch (error) {

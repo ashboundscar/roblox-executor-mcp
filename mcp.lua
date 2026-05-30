@@ -266,6 +266,7 @@ local function poll()
                 if decodeSuccess and data and data.id ~= nil then
                     local result
                     if data.method == "run_lua" then result = runLua(data.params.code)
+                    elseif data.method == "run_lua_file" then result = runLua(data.params.code)
                     elseif data.method == "list_children" then result = listChildren(data.params.path)
                     elseif data.method == "inspect_object" then result = inspectObject(data.params.path)
                     elseif data.method == "decompile_script" then result = decompileScript(data.params.path)

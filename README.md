@@ -48,6 +48,7 @@ Add the following configuration to your `settings.json` (usually located in `%AP
 ## Available Tools
 
 - `run_lua(code)` — Execute Luau code.
+- `run_lua_file(filePath)` — Read a local .lua file and execute its content in-game.
 - `list_children(path)` — List children of an object (e.g., `game.Workspace`).
 - `inspect_object(path)` — Get full details of an object (Properties, Attributes, Tags).
 - `decompile_script(path)` — Decompile a script to view its source code.
